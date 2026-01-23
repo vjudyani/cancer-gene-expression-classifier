@@ -20,12 +20,18 @@ This type of analysis has direct applications in:
 ```
 cancer-gene-expression-classifier/
 │
-├── data/                        # Input gene expression data (not tracked by git)
-├── notebooks/                   # Exploratory data analysis (Jupyter notebooks)
+├── data/                            # Input gene expression data (not tracked by git)
+│   └── gene_expression.csv          # Sample matrix (samples × genes + label column)
 ├── src/
-│   └── classifier.py            # Main classification script
-├── results/                     # Output figures and metrics
-├── requirements.txt             # Python dependencies
+│   ├── classifier.py                # Main classification pipeline
+│   └── generate_sample_data.py      # Script to generate synthetic test data
+├── results/                         # Output figures and metrics (auto-generated)
+│   ├── pca_plot.png                 # PCA sample clustering
+│   ├── confusion_matrix.png         # Confusion matrix heatmap
+│   ├── roc_curve.png                # ROC curve
+│   ├── top_genes.png                # Top 20 most influential genes
+│   └── metrics.csv                  # All evaluation metrics
+├── requirements.txt                 # Python dependencies
 └── README.md
 ```
 
@@ -34,11 +40,14 @@ cancer-gene-expression-classifier/
 ## 🧪 Dataset
 
 - **Source:** Publicly available gene expression dataset (e.g., TCGA / GEO)
-- **Features:** Gene expression values (normalized counts / TPM) across thousands of genes
-- **Labels:** Binary — Tumor vs. Normal
-- **Format:** CSV / TSV matrix (samples × genes)
+- **Features:** Gene expression values (normalized counts / TPM) across hundreds of genes
+- **Labels:** Binary — Tumor (1) vs. Normal (0)
+- **Format:** CSV matrix (samples × genes) with a `label` column
 
-> To use your own dataset, place it in the `data/` directory and update the file path in `classifier.py`.
+> To generate a synthetic dataset for testing, run:
+> ```bash
+> python src/generate_sample_data.py --output data/gene_expression.csv
+> ```
 
 ---
 
@@ -46,23 +55,25 @@ cancer-gene-expression-classifier/
 
 ### 1. Data Preprocessing
 - Loaded gene expression matrix using `pandas`
-- Handled missing values and removed low-variance genes
-- Applied **log2 normalization** to reduce skewness
-- Scaled features using `StandardScaler` from scikit-learn
+- Dropped genes with >20% missing values
+- Filled remaining NaNs with column median
+- Removed low-variance genes (variance < 0.01)
+- Applied **log2(x + 1) normalization** to reduce expression skewness
 
 ### 2. Exploratory Data Analysis
-- PCA visualization to assess sample clustering by class
-- Heatmap of top differentially expressed genes
+- PCA (2 components) to visualize sample clustering by class label
+- Identifies whether tumor and normal samples are separable in expression space
 
 ### 3. Model Training
-- Algorithm: **Logistic Regression** (scikit-learn)
-- Train/test split: 80/20 stratified split
-- Hyperparameter tuning via cross-validation
+- Algorithm: **Logistic Regression** with L2 regularization
+- Train/test split: **80/20 stratified** split to preserve class balance
+- **5-fold stratified cross-validation** on training set for robust AUC estimation
+- Solver: `liblinear` (suitable for high-dimensional genomic data)
 
 ### 4. Model Evaluation
 - Metrics: Accuracy, Precision, Recall, F1-score, ROC-AUC
-- Confusion matrix visualization
-- Feature importance: top genes contributing to classification
+- Confusion matrix and ROC curve visualizations saved to `results/`
+- Feature importance: top 20 genes by logistic regression coefficient magnitude
 
 ---
 
@@ -70,26 +81,28 @@ cancer-gene-expression-classifier/
 
 | Metric | Score |
 |--------|-------|
-| Accuracy | ~XX% |
-| Precision | ~XX% |
-| Recall | ~XX% |
-| F1-Score | ~XX% |
-| ROC-AUC | ~XX |
+| Accuracy | 1.00 |
+| Precision | 1.00 |
+| Recall | 1.00 |
+| F1-Score | 1.00 |
+| ROC-AUC | 1.00 |
+| CV AUC (5-fold) | 1.000 ± 0.000 |
 
-> *(Update this table with your actual results)*
+> Results above are from a **synthetic dataset** designed to demonstrate the pipeline.
+> On real-world RNA-seq data (e.g., TCGA), expect AUC in the range of 0.90–0.98 depending
+> on cancer type and dataset quality.
 
 ---
 
 ## 🛠️ Requirements
 
-```bash
-Python >= 3.8
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
-jupyter
+```
+pandas>=1.5.0
+numpy>=1.23.0
+scikit-learn>=1.1.0
+matplotlib>=3.5.0
+seaborn>=0.12.0
+jupyter>=1.0.0
 ```
 
 Install all dependencies:
@@ -102,26 +115,28 @@ pip install -r requirements.txt
 
 ## 🚀 How to Run
 
-### Clone the repository
+### 1. Clone the repository
 ```bash
 git clone https://github.com/vjudyani/cancer-gene-expression-classifier.git
 cd cancer-gene-expression-classifier
 ```
 
-### Install dependencies
+### 2. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Run the classifier
+### 3. Generate sample data (or use your own)
+```bash
+python src/generate_sample_data.py --output data/gene_expression.csv
+```
+
+### 4. Run the classifier
 ```bash
 python src/classifier.py --input data/gene_expression.csv --output results/
 ```
 
-### Or explore the notebook
-```bash
-jupyter notebook notebooks/exploratory_analysis.ipynb
-```
+Output files will be saved automatically to `results/`.
 
 ---
 
@@ -137,9 +152,10 @@ This makes it particularly useful in a translational research setting where biol
 
 - [ ] Expand to multi-class classification (multiple cancer types)
 - [ ] Implement Random Forest and XGBoost for performance comparison
-- [ ] Add feature selection using LASSO regularization
+- [ ] Add feature selection using LASSO (L1) regularization
 - [ ] Integrate with TCGA data via the GDC API
-- [ ] Build a Snakemake pipeline for reproducibility
+- [ ] Build a Snakemake pipeline for full reproducibility
+- [ ] Add differential expression analysis (DESeq2-style) as preprocessing step
 
 ---
 
@@ -153,7 +169,7 @@ MS Bioinformatics | Bioinformatics Analyst
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ---
 
