@@ -1,10 +1,10 @@
-# Cancer Gene Expression Classifier 🧬
+# Cancer Gene Expression Classifier
 
 A machine learning pipeline to classify **tumor vs. normal samples** using RNA-seq gene expression data. This project demonstrates end-to-end bioinformatics analysis — from raw expression data preprocessing through model training, evaluation, and interpretation.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 Gene expression profiling via RNA sequencing (RNA-seq) provides a powerful snapshot of cellular state. This project applies supervised machine learning — specifically **logistic regression** — to distinguish cancerous from normal tissue samples based on their gene expression signatures.
 
@@ -15,7 +15,7 @@ This type of analysis has direct applications in:
 
 ---
 
-## 🗂️ Repository Structure
+## Repository Structure
 
 ```
 cancer-gene-expression-classifier/
@@ -37,7 +37,7 @@ cancer-gene-expression-classifier/
 
 ---
 
-## 🧪 Dataset
+##  Dataset
 
 - **Source:** Publicly available gene expression dataset (e.g., TCGA / GEO)
 - **Features:** Gene expression values (normalized counts / TPM) across hundreds of genes
@@ -51,7 +51,7 @@ cancer-gene-expression-classifier/
 
 ---
 
-## ⚙️ Methods
+##  Methods
 
 ### 1. Data Preprocessing
 - Loaded gene expression matrix using `pandas`
@@ -77,7 +77,7 @@ cancer-gene-expression-classifier/
 
 ---
 
-## 📊 Results
+## Results
 
 | Metric | Score |
 |--------|-------|
@@ -94,7 +94,7 @@ cancer-gene-expression-classifier/
 
 ---
 
-## 🛠️ Requirements
+##  Requirements
 
 ```
 pandas>=1.5.0
@@ -113,7 +113,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Clone the repository
 ```bash
@@ -140,7 +140,7 @@ Output files will be saved automatically to `results/`.
 
 ---
 
-## 🔬 Biological Context
+##  Biological Context
 
 Tumor samples exhibit distinct transcriptomic signatures compared to normal tissue — including upregulation of oncogenes and downregulation of tumor suppressor genes. Logistic regression, while simple, is highly interpretable and clinically relevant because the model coefficients directly indicate which genes are the strongest predictors of malignancy.
 
@@ -148,18 +148,9 @@ This makes it particularly useful in a translational research setting where biol
 
 ---
 
-## 🔭 Future Improvements
 
-- [ ] Expand to multi-class classification (multiple cancer types)
-- [ ] Implement Random Forest and XGBoost for performance comparison
-- [ ] Add feature selection using LASSO (L1) regularization
-- [ ] Integrate with TCGA data via the GDC API
-- [ ] Build a Snakemake pipeline for full reproducibility
-- [ ] Add differential expression analysis (DESeq2-style) as preprocessing step
 
----
-
-## 👩‍💻 Author
+## Author
 
 **Vedika Judyani**
 MS Bioinformatics | Bioinformatics Analyst
@@ -167,13 +158,9 @@ MS Bioinformatics | Bioinformatics Analyst
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
 ---
 
-## 📚 References
+## References
 
 - [TCGA — The Cancer Genome Atlas](https://www.cancer.gov/tcga)
 - [GEO — Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/)
